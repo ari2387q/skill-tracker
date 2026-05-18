@@ -1,7 +1,7 @@
 import  Skill  from "../skills/skill.model";
 import  Log  from "../logs/log.model";
 
-export const getDashboardData = async (userId:String)=>{
+export const getDashboardData = async (userId: string)=>{
     //fetching data from skill model
     const skills = await Skill.find({user: userId})
     const logs = await Log.find({user:userId}).sort({practicedAt:1})

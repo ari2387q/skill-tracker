@@ -56,6 +56,37 @@ const sendMessage = async () => {
   }
 };
 
+  const renderMessageContent = (content: string) => {
+    return content.split("\n").map((line, idx) => {
+      const boldRegex = /\*\*(.*?)\*\*/g;
+      const parts = [];
+      let lastIndex = 0;
+      let match;
+
+      while ((match = boldRegex.exec(line)) !== null) {
+        if (match.index > lastIndex) {
+          parts.push(line.substring(lastIndex, match.index));
+        }
+        parts.push(
+          <strong key={match.index} className="font-bold text-blue-700">
+            {match[1]}
+          </strong>
+        );
+        lastIndex = boldRegex.lastIndex;
+      }
+
+      if (lastIndex < line.length) {
+        parts.push(line.substring(lastIndex));
+      }
+
+      return (
+        <span key={idx} className="block min-h-[1.25rem]">
+          {parts.length > 0 ? parts : line}
+        </span>
+      );
+    });
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 to-gray-200">
       {/* Header */}
@@ -82,7 +113,7 @@ const sendMessage = async () => {
                     : "bg-white text-gray-900 rounded-bl-md"
                 }`}
               >
-                {msg.content}
+                {msg.role === "assistant" ? renderMessageContent(msg.content) : msg.content}
               </div>
             </div>
           ))}

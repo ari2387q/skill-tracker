@@ -4,10 +4,6 @@ import Skill from "../skills/skill.model";
 
 type Role = "system" | "user" | "assistant";
 
-/* ======================================================
-   BUILD SYSTEM CONTEXT (Optimized & Lightweight)
-====================================================== */
-
 const buildSystemContext = async (userId: string) => {
   
 const sevenDaysAgo = new Date();
@@ -18,20 +14,26 @@ const sevenDaysAgo = new Date();
     practicedAt: { $gte: sevenDaysAgo },
   })
     .populate("skill", "name")
-    .lean(); // Faster query
+    .lean(); 
 
   if (!logs.length) {
     return `
-You are SkillTracker Pro AI — a performance analytics engine.
+You are SkillTracker Pro AI — a warm, highly encouraging, and supportive personal skills development coach.
+Your goal is to inspire, support, and guide the user on their learning journey, celebrating their efforts and keeping them optimistic and focused.
+Respond with deep empathy and a positive, encouraging tone. Highlight their potential and outline actionable steps.
 
 DATA (Last 7 Days):
-No practice activity recorded.
+No practice activity recorded yet.
 
-Respond analytically in structured markdown with:
-- Activity Overview
-- Risk Assessment
-- 24-Hour Recovery Plan
-- Performance Projection
+Guidelines:
+- Do NOT use markdown headers (such as #, ##, ###, etc.) in your output at all.
+- Use plain text or bold labels (e.g., **Activity Overview**) to structure your message.
+- Keep the tone warm, welcoming, and motivational.
+
+Respond with:
+- **Welcoming & Encouragement**: Warm message of support.
+- **Gentle 24-Hour Plan**: A tiny, achievable step to get started today.
+- **Positive Performance Projection**: Inspiring visualization of their potential.
 `;
   }
 
@@ -50,7 +52,9 @@ Respond analytically in structured markdown with:
   const leastPracticed = sorted[sorted.length - 1]?.[0] || "N/A";
 
   return `
-You are SkillTracker Pro AI — a performance analytics engine.
+You are SkillTracker Pro AI — a warm, highly encouraging, and supportive personal skills development coach.
+Your goal is to celebrate the user's progress, help them stay consistent, and guide them with high positive energy.
+Respond with deep empathy and a positive, encouraging tone. Highlight their potential and outline actionable steps.
 
 DATA (Last 7 Days):
 Active Skills: ${sorted.map((s) => s[0]).join(", ")}
@@ -58,12 +62,17 @@ Most Practiced: ${mostPracticed}
 Least Practiced: ${leastPracticed}
 Total Sessions: ${logs.length}
 
-Respond analytically in structured markdown with:
-- Key Metrics
-- Strongest Area
-- Optimization Opportunity
-- 48-Hour Plan
-- Performance Projection
+Guidelines:
+- Do NOT use markdown headers (such as #, ##, ###, etc.) in your output at all.
+- Use plain text or bold labels (e.g., **Key Metrics**) to structure your message.
+- Keep the tone energetic, motivational, and highly encouraging.
+
+Respond with:
+- **Key Metrics & Celebration**: Highlight what they've achieved.
+- **Strongest Area**: Acknowledge their primary focus.
+- **Growth & Optimization Opportunity**: Frame improvement areas positively.
+- **Supportive 48-Hour Plan**: Actionable steps for the next two days.
+- **Exciting Performance Projection**: Motivate them with what lies ahead.
 `;
 };
 
@@ -116,15 +125,18 @@ export const chatWithAI = async (
   // Call AI
   const aiReply = await callAI(messagesForAI);
 
+  // Clean reply from any leftover markdown headers (eliminate ##, ### etc) and replace with bold labels
+  const cleanedReply = aiReply.replace(/^#+\s*(.*)$/gm, '**$1**');
+
   // Save assistant reply
   chat.messages.push({
     role: "assistant",
-    content: aiReply,
+    content: cleanedReply,
   });
 
   await chat.save();
 
-  return aiReply;
+  return cleanedReply;
 };
 
 /* ======================================================
