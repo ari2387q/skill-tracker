@@ -2,63 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Color palette: light orange (primary), light blue (secondary), white background */
 :root {
   --background: #ffffff;
-  --foreground: #0f172a; /* slate-900 */
+  --foreground: #0f172a; /* Slate 900 */
   --card: #ffffff;
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #FFA94D; /* light orange */
-  --primary-foreground: #04263a; /* dark navy for contrast */
-  --secondary: #9FD4FF; /* light blue */
-  --secondary-foreground: #04263a;
-  --muted: #f8fafc; /* very light */
-  --muted-foreground: #6b7280;
-  --accent: #FFF3E0; /* pale orange */
-  --accent-foreground: #04263a;
-  --destructive: #ff6b6b;
+  --primary: #f59e0b; /* Vibrant Yellow/Gold */
+  --primary-foreground: #000000; /* Contrast black */
+  --secondary: #3b82f6; /* Modern Blue */
+  --secondary-foreground: #ffffff;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --accent: #fef9c3; /* Light yellow accent */
+  --accent-foreground: #713f12;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e6eef8;
+  --border: #e2e8f0;
   --input: #ffffff;
-  --ring: #ffd1a1;
-  --chart-1: var(--primary);
-  --chart-2: #8fc1ff;
-  --chart-3: #bfe9ff;
-  --chart-4: #ffd7b5;
-  --chart-5: #ffe6cc;
-  --radius: 0.75rem;
-  --sidebar: #ffffff;
+  --ring: #f59e0b;
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #ef4444;
+  --chart-5: #8b5cf6;
+  --radius: 1rem; /* Bubbly, lumpy rounded corners */
+  --sidebar: #f8fafc; /* White-blue light sidebar */
   --sidebar-foreground: #0f172a;
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-border: #e6eef8;
-  --sidebar-ring: var(--ring);
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eff6ff;
+  --sidebar-accent-foreground: #1d4ed8;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #3b82f6;
 }
 
 .dark {
-  --background: #071428; /* deep navy */
-  --foreground: #e6eef8;
-  --card: #071428;
-  --card-foreground: #e6eef8;
-  --popover: #071428;
-  --popover-foreground: #e6eef8;
-  --primary: #ffb36b;
-  --primary-foreground: #071428;
-  --secondary: #5fb3ff;
-  --secondary-foreground: #071428;
-  --muted: #0b1220;
-  --muted-foreground: #9aa4b2;
-  --accent: #1a2b3a;
-  --accent-foreground: #e6eef8;
-  --destructive: #ff6b6b;
-  --destructive-foreground: #071428;
-  --border: #0b2340;
-  --input: #0b1220;
-  --ring: #ffcf9a;
+  --background: #000000; /* Pure black */
+  --foreground: #fef08a; /* Bright light yellow-white text */
+  --card: #09090b; /* Deep black cards */
+  --card-foreground: #fafafa;
+  --popover: #09090b;
+  --popover-foreground: #fafafa;
+  --primary: #facc15; /* Cyberpunk Yellow */
+  --primary-foreground: #000000; /* Contrast black */
+  --secondary: #18181b; /* Dark charcoal */
+  --secondary-foreground: #facc15; /* Yellow text */
+  --muted: #09090b;
+  --muted-foreground: #a1a1aa;
+  --accent: #1e1b4b;
+  --accent-foreground: #facc15;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #27272a; /* Keep borders clean or slightly yellow */
+  --input: #000000;
+  --ring: #facc15;
+  --chart-1: #facc15;
+  --chart-2: #3b82f6;
+  --chart-3: #10b981;
+  --chart-4: #ec4899;
+  --chart-5: #8b5cf6;
+  --sidebar: #000000; /* Pitch black sidebar */
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #facc15;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #18181b;
+  --sidebar-accent-foreground: #facc15;
+  --sidebar-border: #18181b;
+  --sidebar-ring: #facc15;
 }
 
 @layer theme {
@@ -93,7 +105,25 @@
 
 @layer base {
   body {
-    @apply bg-white text-foreground antialiased;
+    @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
   }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-slide-up {
+  animation: fadeInSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

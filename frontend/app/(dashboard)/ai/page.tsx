@@ -88,16 +88,21 @@ const sendMessage = async () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-100 to-gray-200">
+    <div className="flex flex-col h-[calc(100vh-3rem)] md:h-[calc(100vh-6rem)] rounded-3xl border border-border overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 shadow-xl">
       {/* Header */}
-      <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 text-lg font-semibold">
-          BroSKIL
+      <header className="sticky top-0 z-10 backdrop-blur bg-background/80 border-b border-border">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse" />
+            <h1 className="text-xl font-extrabold tracking-tight">
+              BROSkill <span className="text-xs font-semibold text-primary px-2.5 py-0.5 bg-primary/10 rounded-full ml-2">AI Assistant</span>
+            </h1>
+          </div>
         </div>
       </header>
 
       {/* Chat Area */}
-      <main className="flex-1 overflow-y-auto px-4 py-6">
+      <main className="flex-1 overflow-y-auto px-6 py-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((msg, idx) => (
             <div
@@ -109,8 +114,8 @@ const sendMessage = async () => {
               <div
                 className={`max-w-[75%] rounded-2xl px-5 py-4 text-sm leading-relaxed shadow-sm ${
                   msg.role === "user"
-                    ? "bg-blue-600 text-white rounded-br-md"
-                    : "bg-white text-gray-900 rounded-bl-md"
+                    ? "bg-secondary text-secondary-foreground rounded-br-none font-medium"
+                    : "bg-card text-foreground border border-border rounded-bl-none font-normal"
                 }`}
               >
                 {msg.role === "assistant" ? renderMessageContent(msg.content) : msg.content}
@@ -120,7 +125,7 @@ const sendMessage = async () => {
 
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-white px-5 py-4 rounded-2xl shadow text-gray-500 animate-pulse">
+              <div className="bg-card border border-border px-5 py-4 rounded-2xl shadow text-muted-foreground animate-pulse text-sm">
                 AI is thinking<span className="ml-1">...</span>
               </div>
             </div>
@@ -131,15 +136,15 @@ const sendMessage = async () => {
       </main>
 
       {/* Input */}
-      <footer className="border-t bg-white/80 backdrop-blur">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-end gap-3 rounded-2xl border bg-white px-4 py-3 shadow-sm focus-within:ring-2 focus-within:ring-blue-500">
+      <footer className="border-t border-border bg-background/80 backdrop-blur">
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <div className="flex items-end gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-md focus-within:ring-2 focus-within:ring-primary/50 transition-all duration-300">
             <textarea
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Ask Skill Tracker AI anything…"
               rows={1}
-              className="flex-1 resize-none bg-transparent outline-none text-sm max-h-40"
+              className="flex-1 resize-none bg-transparent outline-none text-sm max-h-40 text-foreground placeholder:text-muted-foreground"
               onKeyDown={e => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -150,7 +155,7 @@ const sendMessage = async () => {
             <button
               onClick={sendMessage}
               disabled={loading}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition"
+              className="rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition shrink-0"
             >
               Send
             </button>

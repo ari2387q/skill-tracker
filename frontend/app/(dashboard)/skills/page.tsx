@@ -89,22 +89,22 @@ export default function SkillsPage() {
       </div>
 
       {/* Add Skill */}
-      <div className="flex gap-2 max-w-md">
+      <div className="flex gap-3 max-w-md">
         <Input
-          placeholder="Enter new skill"
+          placeholder="Enter new skill..."
           value={newSkill}
           onChange={(e) => setNewSkill(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
+          className="rounded-full px-5 py-3 h-11 border-border"
         />
-        <Button onClick={handleAddSkill} disabled={loading}>
-          <Plus className="h-4 w-4" />
+        <Button onClick={handleAddSkill} disabled={loading} className="rounded-full px-5 h-11 font-bold">
+          <Plus className="h-4 w-4 mr-1" /> Add Skill
         </Button>
       </div>
 
       {/* Skills Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {skills.map((skill) => {
-          // ✅ THIS IS THE MISSING LOGIC
           const practicedToday =
             skill.lastPracticed &&
             new Date(skill.lastPracticed).toDateString() ===
@@ -112,22 +112,22 @@ export default function SkillsPage() {
 
           return (
             <Card
-              key={skill.id}   // ✅ MUST USE _id
+              key={skill.id}
               className={cn(
-                "transition-all",
+                "rounded-3xl border border-border dark:border-primary/10 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] bg-card",
                 !skill.isActive && "opacity-60"
               )}
             >
-              <CardHeader className="flex flex-row justify-between items-start">
-                <div className="space-y-1">
-                  <CardTitle className="flex items-center gap-2">
+              <CardHeader className="flex flex-row justify-between items-start pb-2">
+                <div className="space-y-1.5">
+                  <CardTitle className="flex items-center gap-2 text-lg font-bold">
                     {skill.name}
                     {practicedToday && (
-                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
                     )}
                   </CardTitle>
 
-                  <Badge variant={skill.isActive ? "default" : "secondary"}>
+                  <Badge variant={skill.isActive ? "default" : "secondary"} className="rounded-full">
                     {skill.isActive ? "Active" : "Inactive"}
                   </Badge>
                 </div>
@@ -135,6 +135,7 @@ export default function SkillsPage() {
                 <Button
                   variant="ghost"
                   size="icon"
+                  className="rounded-full hover:bg-muted"
                   onClick={() => handleToggleActive(skill.id)}
                   title="Toggle active"
                 >
@@ -143,18 +144,18 @@ export default function SkillsPage() {
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Zap className="h-5 w-5 text-orange-500" />
-                  <span className="text-2xl font-bold">
+                <div className="flex items-center gap-3 bg-muted/30 p-3 rounded-2xl border border-border/10">
+                  <Zap className="h-5 w-5 text-amber-500 animate-pulse" />
+                  <span className="text-2xl font-black text-foreground">
                     {skill.currentStreak}
                   </span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     day streak
                   </span>
                 </div>
 
                 <Button
-                  className="w-full"
+                  className="w-full rounded-full font-bold h-11"
                   disabled={!skill.isActive || practicedToday || loading}
                   onClick={() => handleMarkPracticed(skill.id)}
                 >

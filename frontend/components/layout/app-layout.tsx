@@ -22,7 +22,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* Main Content */}
         <main className="flex-1 md:pl-64 pt-14 md:pt-0 pb-12 md:pb-0">
-          <div className="container mx-auto p-4 md:p-6 max-w-5xl">{children}</div>
+          <div className="container mx-auto p-4 md:p-6 max-w-5xl animate-fade-in-slide-up">{children}</div>
         </main>
 
         {/* Mobile Navigation */}

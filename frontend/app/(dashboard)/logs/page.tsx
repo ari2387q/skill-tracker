@@ -18,6 +18,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 import { logsApi, skillsApi } from "@/lib/api"
 import type { Log, Skill } from "@/lib/types"
@@ -176,31 +177,47 @@ export default function LogsPage() {
 
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-1" />Add Daily</Button>
+            <Button className="rounded-full font-bold shadow-md shadow-primary/10 hover:shadow-primary/20"><Plus className="h-4 w-4 mr-1 animate-pulse" />Add Daily</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <form onSubmit={handleAddLog}>
               <DialogHeader>
-                <DialogTitle>Add Log</DialogTitle>
+                <DialogTitle className="text-xl font-bold">Add Log</DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground">Select a skill and jot down any practice notes for today.</DialogDescription>
               </DialogHeader>
 
-              <Label>Skill</Label>
-              <select
-                className="w-full border rounded p-2"
-                value={selectedSkillId}
-                onChange={(e) => setSelectedSkillId(e.target.value)}
-              >
-                <option value="">Select skill</option>
-                {skills.map(s => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">Skill</Label>
+                  <Select value={selectedSkillId} onValueChange={setSelectedSkillId}>
+                    <SelectTrigger className="w-full rounded-xl">
+                      <SelectValue placeholder="Choose a skill" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {skills.map((s) => (
+                        <SelectItem key={s.id} value={s.id}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <Label className="mt-3 block">Notes</Label>
-              <Textarea value={logNotes} onChange={(e) => setLogNotes(e.target.value)} />
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold">Notes</Label>
+                  <Textarea
+                    placeholder="Describe what you worked on today (optional)..."
+                    value={logNotes}
+                    onChange={(e) => setLogNotes(e.target.value)}
+                    className="min-h-[100px] rounded-xl resize-none"
+                  />
+                </div>
+              </div>
 
-              <DialogFooter>
-                <Button type="submit">Save</Button>
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button type="submit" disabled={isSubmitting || !selectedSkillId} className="w-full sm:w-auto rounded-full font-bold">
+                  {isSubmitting ? "Saving..." : "Save Log"}
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -252,17 +269,27 @@ export default function LogsPage() {
 
       {/* EDIT DIALOG */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <form onSubmit={handleUpdateLog}>
             <DialogHeader>
-              <DialogTitle>Edit Log</DialogTitle>
+              <DialogTitle className="text-xl font-bold">Edit Log</DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">Modify your practice session notes.</DialogDescription>
             </DialogHeader>
-            <Textarea
-              value={editNotes}
-              onChange={(e) => setEditNotes(e.target.value)}
-            />
-            <DialogFooter>
-              <Button type="submit">Update</Button>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-bold">Notes</Label>
+                <Textarea
+                  placeholder="Describe what you worked on..."
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  className="min-h-[100px] rounded-xl resize-none"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button type="submit" className="w-full sm:w-auto rounded-full font-bold">
+                Update
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
