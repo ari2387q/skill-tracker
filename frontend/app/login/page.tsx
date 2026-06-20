@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 import { Label } from "@/components/ui/label"
+import { Rocket } from "lucide-react"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -60,38 +61,45 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignIn = () => {
-    // placeholder — backend route or OAuth flow should handle this path
     window.location.href = "/auth/google"
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row bg-background relative overflow-hidden">
+      {/* Decorative Orbs */}
+      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-secondary/10 blur-[120px] pointer-events-none" />
+
       {/* Left: Branding */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-orange-200 via-white to-sky-200 text-slate-900 items-center justify-center p-8">
-        <div className="max-w-lg text-center">
-          <h1 className="text-5xl font-extrabold tracking-tight">
-            <span>Skill</span>
-            <span className="ml-1 bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-sky-600">Tracker</span>
+      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-primary/10 via-background to-secondary/5 text-foreground items-center justify-center p-12 border-r border-border">
+        <div className="max-w-md space-y-6">
+          <div className="inline-flex p-3 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
+            <Rocket className="h-8 w-8 animate-bounce" />
+          </div>
+          <h1 className="text-5xl font-black tracking-tight leading-none">
+            Skill<span className="text-primary">Tracker</span>
           </h1>
-          <p className="mt-4 text-lg text-slate-700">Track habits, build streaks, and level up your skills.</p>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            Track daily habits, construct long streaks, and leverage smart stats to master your skills.
+          </p>
         </div>
       </div>
 
       {/* Right: Auth Card */}
-      <div className="flex w-full md:w-1/2 items-center justify-center p-6">
+      <div className="flex w-full md:w-1/2 items-center justify-center p-6 z-10">
         <div className="w-full max-w-md">
-          <Card>
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
-              <CardDescription className="text-center">
-                Sign in to your account
+          <Card className="rounded-3xl border border-border dark:border-primary/10 bg-card/60 backdrop-blur-md shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+            <CardHeader className="space-y-2 pb-6">
+              <CardTitle className="text-3xl font-black text-center tracking-tight">Welcome back</CardTitle>
+              <CardDescription className="text-center font-medium text-muted-foreground">
+                Sign in to your dashboard
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="font-bold text-xs uppercase tracking-wider text-muted-foreground ml-1">Email Address</Label>
                     <Input
                       id="email"
                       name="email"
@@ -100,10 +108,11 @@ export default function LoginPage() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      className="rounded-full px-5 py-3 h-11 border-border bg-background"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" className="font-bold text-xs uppercase tracking-wider text-muted-foreground ml-1">Password</Label>
                     <Input
                       id="password"
                       name="password"
@@ -112,23 +121,24 @@ export default function LoginPage() {
                       value={formData.password}
                       onChange={handleInputChange}
                       required
+                      className="rounded-full px-5 py-3 h-11 border-border bg-background"
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full rounded-full h-11 font-bold shadow-lg shadow-primary/15 hover:scale-[1.01] active:scale-[0.99] transition-all duration-350 mt-2" disabled={isLoading}>
                     {isLoading ? "Signing in..." : "Sign in"}
                   </Button>
                 </form>
 
-                <div className="relative">
+                <div className="relative py-2">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t" />
+                    <div className="w-full border-t border-border" />
                   </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="bg-card px-2 text-muted-foreground">Or sign in with</span>
+                  <div className="relative flex justify-center text-xs uppercase tracking-widest">
+                    <span className="bg-card px-3 text-muted-foreground font-bold">Or</span>
                   </div>
                 </div>
 
-                <Button variant="outline" className="w-full flex items-center justify-center gap-3" onClick={handleGoogleSignIn}>
+                <Button variant="outline" className="w-full rounded-full h-11 font-bold flex items-center justify-center gap-3 hover:bg-muted transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]" onClick={handleGoogleSignIn}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
                     <path fill="#4285F4" d="M24 9.5c3.54 0 6.45 1.22 8.39 2.83l6.24-6.24C34.6 2.08 29.66 0 24 0 14.73 0 6.95 5.79 3.54 13.9l7.43 5.77C12.98 14.02 18.98 9.5 24 9.5z"/>
                     <path fill="#34A853" d="M46.45 24.5c0-1.6-.14-2.8-.44-4.03H24v8.03h12.63c-.54 2.9-2.33 5.34-4.97 6.98l7.6 5.9C44.97 38.1 46.45 31.7 46.45 24.5z"/>
@@ -139,10 +149,10 @@ export default function LoginPage() {
                 </Button>
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <div className="text-sm text-center text-muted-foreground">
+            <CardFooter className="pt-2">
+              <div className="text-sm text-center text-muted-foreground w-full font-medium">
                 Don't have an account?{" "}
-                <Link href="/register" className="text-primary hover:underline underline-offset-4">
+                <Link href="/register" className="text-primary hover:underline underline-offset-4 font-bold">
                   Create an account
                 </Link>
               </div>
