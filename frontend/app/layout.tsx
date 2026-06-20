@@ -22,9 +22,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Skill Tracker - Track Your Progress",
   description: "Track your skills, build streaks, and achieve your goals",
-  icons: {
-    icon: "/icon.svg",
-  },
+  icons: [
+    { rel: "icon", type: "image/svg+xml", url: "/icon.svg" },
+    { rel: "shortcut icon", url: "/icon.svg" },
+    { rel: "apple-touch-icon", url: "/icon.svg" },
+  ],
 }
 
 export default function RootLayout({
@@ -34,6 +36,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+        <link rel="shortcut icon" href="/icon.svg" />
+      </head>
       <body
         className={`${geist.variable} ${geistMono.variable} font-sans antialiased`}
       >
