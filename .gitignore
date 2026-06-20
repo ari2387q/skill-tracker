@@ -25,3 +25,4 @@ Thumbs.db
 # IDEs
 .vscode/
 .idea/
+*.tsbuildinfo
