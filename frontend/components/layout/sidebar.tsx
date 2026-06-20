@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Rocket, ClipboardList, BarChart3, LogOut, Sun, Moon } from "lucide-react"
+import { LayoutDashboard, Rocket, ClipboardList, BarChart3, LogOut, Sun, Moon, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,12 @@ const navigation = [
   { name: "AI Model", href: "/ai", icon: BarChart3 },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+function NavContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname()
   const { logout, user } = useAuth()
   const { theme, setTheme } = useTheme()
@@ -28,8 +33,13 @@ export function Sidebar() {
 
   return (
     <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300">
-      <div className="flex h-16 items-center px-6 border-b border-sidebar-border">
-        <Link href="/dashboard" className="flex items-center gap-3 font-extrabold text-xl text-foreground hover:scale-105 transition-transform duration-200">
+      {/* Logo */}
+      <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-3 font-extrabold text-xl text-foreground hover:scale-105 transition-transform duration-200"
+          onClick={onClose}
+        >
           <div className="p-2 rounded-xl bg-primary text-primary-foreground shadow-md shadow-primary/20">
             <Rocket className="h-5 w-5 animate-pulse" />
           </div>
@@ -37,6 +47,16 @@ export function Sidebar() {
             Skill<span className="text-primary">Tracker</span>
           </span>
         </Link>
+        {/* Close button (mobile only) */}
+        {onClose && (
+          <button
+            className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       <nav className="flex-1 space-y-2 p-4">
@@ -46,6 +66,7 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onClose}
               className={cn(
                 "flex items-center gap-4 px-5 py-3 text-sm font-semibold rounded-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]",
                 isActive
@@ -53,7 +74,7 @@ export function Sidebar() {
                   : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
               )}
             >
-              <item.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:scale-110", isActive ? "scale-110" : "")} />
+              <item.icon className={cn("h-5 w-5 transition-transform duration-300", isActive ? "scale-110" : "")} />
               <span>{item.name}</span>
             </Link>
           )
@@ -97,5 +118,48 @@ export function Sidebar() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export function Sidebar({ isOpen = false, onOpenChange }: SidebarProps) {
+  const close = () => onOpenChange?.(false)
+
+  return (
+    <>
+      {/* Desktop: always visible */}
+      <div className="hidden md:flex h-full flex-col">
+        <NavContent />
+      </div>
+
+      {/* Mobile: Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={close}
+        />
+      )}
+
+      {/* Mobile: Slide-in Drawer */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out md:hidden",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <NavContent onClose={close} />
+      </div>
+    </>
+  )
+}
+
+export function BurgerButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="md:hidden p-2 rounded-full bg-muted hover:bg-primary hover:text-primary-foreground text-foreground transition-all duration-200 active:scale-90"
+      aria-label="Open menu"
+    >
+      <Menu className="h-5 w-5" />
+    </button>
   )
 }
