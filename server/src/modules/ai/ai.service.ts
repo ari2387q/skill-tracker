@@ -183,7 +183,7 @@ export const callAI = async (
       throw new Error(`OpenRouter API error: ${errText}`);
     }
 
-    const data = await res.json();
+    const data = await res.json() as any;
 
     return data.choices?.[0]?.message?.content || "No response generated.";
   } catch (error: any) {

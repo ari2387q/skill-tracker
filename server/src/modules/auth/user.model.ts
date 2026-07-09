@@ -10,8 +10,8 @@ export interface IUser extends Document {
   lastStudyDate?: Date;
   role: "user" | "admin";
   isVerified:boolean;
-  verificationTokenHash: string;
-  verificationTokenExpiry: Date;
+  verificationTokenHash?: string;
+  verificationTokenExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
   generateVerificationToken():any;

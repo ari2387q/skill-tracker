@@ -65,3 +65,25 @@ export const getMe = async (req: Request, res: Response) => {
 export const getProfile = async (req: Request, res: Response) => {
   res.json({ user: (req as any).user });
 };
+export const verifyEmail = async (req: Request, res: Response) => {
+  const { token } = req.query;
+
+  if (!token || typeof token !== "string") {
+    return res.status(400).json({ message: "Verification token is required" });
+  }
+
+  try {
+    const result = await authService.verifyEmail(token);
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully. You can now log in.",
+      email: result.email,
+    });
+  } catch (error) {
+    if (error instanceof authService.AuthError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    console.error("VERIFY EMAIL ERROR:", error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};

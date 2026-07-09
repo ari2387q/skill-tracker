@@ -1,5 +1,6 @@
 import User from "./user.model";
 import { sendVerificationEmail } from "./email.service";
+import crypto from "crypto"
 
 export class AuthError extends Error {
   statusCode: number;
@@ -73,4 +74,25 @@ export const loginUser = async ({ email, password }: LoginInput) => {
     email: user.email,
     role: user.role,
   };
+};
+
+export const verifyEmail = async (token: string) => {
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({ verificationTokenHash: hashedToken });
+
+  if (!user) {
+    throw new AuthError("Invalid or expired verification token", 400);
+  }
+
+  if (!user.verificationTokenExpiry || user.verificationTokenExpiry < new Date()) {
+    throw new AuthError("Verification token has expired", 400);
+  }
+
+  user.isVerified = true;
+  user.verificationTokenHash = undefined;
+  user.verificationTokenExpiry = undefined;
+  await user.save();
+
+  return { email: user.email };
 };
