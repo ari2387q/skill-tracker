@@ -9,12 +9,12 @@ export interface IUser extends Document {
   streak: number;
   lastStudyDate?: Date;
   role: "user" | "admin";
-  isVerififed:boolean;
+  isVerified:boolean;
   verificationTokenHash: string;
   verificationTokenExpiry: Date;
   createdAt: Date;
   updatedAt: Date;
-
+  generateVerificationToken():any;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -50,7 +50,7 @@ const userSchema = new Schema<IUser>(
       default: "user",
 
     },
-    isVerififed:{
+    isVerified:{
     type:Boolean,
     default:false},
     verificationTokenHash:{

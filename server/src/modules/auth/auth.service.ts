@@ -1,9 +1,6 @@
 import User from "./user.model";
+import { sendVerificationEmail } from "./email.service";
 
-/**
- * Custom application error
- * (later you can move this to a common errors folder)
- */
 export class AuthError extends Error {
   statusCode: number;
 
@@ -23,23 +20,28 @@ interface LoginInput {
   password: string;
 }
 
-/**
- * Register user (production)
- */
+
+//Register user (production)
+
 export const registerUser = async ({ email, password }: RegisterInput) => {
   // Normalize email
   const normalizedEmail = email.toLowerCase();
 
   const existingUser = await User.findOne({ email: normalizedEmail });
-  if (existingUser) {
+  if (existingUser && existingUser.isVerified) {
     throw new AuthError("User already exists", 409);
   }
-
-  const user = await User.create({
-    email: normalizedEmail,
-    password,
-  });
-
+  let user;
+  if(existingUser && !existingUser.isVerified){
+    user=existingUser;
+    user.password=password;}
+    else{
+      user=new User({email:normalizedEmail,password});
+    }
+  
+  const rawToken = user.generateVerificationToken();
+  await user.save();
+  await sendVerificationEmail(user.email, rawToken);
   return {
     id: user._id,
     email: user.email,
@@ -48,9 +50,9 @@ export const registerUser = async ({ email, password }: RegisterInput) => {
   };
 };
 
-/**
- * Login user (production)
- */
+
+//Login user (production)
+
 export const loginUser = async ({ email, password }: LoginInput) => {
   const normalizedEmail = email.toLowerCase();
 
@@ -63,7 +65,9 @@ export const loginUser = async ({ email, password }: LoginInput) => {
   if (!isPasswordValid) {
     throw new AuthError("Invalid email or password", 401);
   }
-
+  if (!user.isVerified) {
+    throw new AuthError("Please verify your email before logging in", 403);
+  }
   return {
     id: user._id,
     email: user.email,

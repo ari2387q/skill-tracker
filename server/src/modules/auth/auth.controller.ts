@@ -10,23 +10,27 @@ const generateToken = (userId: string) => {
   );
 };
 
-export const register = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+export const register=async(req:Request,res:Response)=>{
+  const{email,password}=req.body;
+  if(!email || !password){
+    return res.status(400).json({message:"email and pass required"})
   }
-
-  const user = await authService.registerUser({ email, password });
-
-  const token = generateToken(user.id.toString());
-
-  res.status(201).json({
-    success: true,
-    token,
-    user,
-  });
+  try{
+    const user=await authService.registerUser({email,password});
+    res.status(201).json({
+      success: true,
+      message: "Signup successful. Please check your email to verify your account.",
+      user,
+    });
+  }
+  catch(error){
+    if(error instanceof authService.AuthError){
+      return res.status(error.statusCode).json({message:"error.message"});
+    }
+  
+  console.error("REGISTER ERROR:", error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -35,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
-
+  try{
   const user = await authService.loginUser({ email, password });
 
   const token = generateToken(user.id.toString());
@@ -45,6 +49,13 @@ export const login = async (req: Request, res: Response) => {
     token,
     user,
   });
+  }catch (error) {
+    if (error instanceof authService.AuthError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    console.error("LOGIN ERROR:", error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
 };
 
 export const getMe = async (req: Request, res: Response) => {
