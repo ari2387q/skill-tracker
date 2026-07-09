@@ -1,9 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-/**
- * User document interface
- */
+//User document interface
 export interface IUser extends Document {
   id: any;
   email: string;
@@ -11,15 +9,18 @@ export interface IUser extends Document {
   streak: number;
   lastStudyDate?: Date;
   role: "user" | "admin";
+  isVerififed:boolean;
+  verificationTokenHash: string;
+  verificationTokenExpiry: Date;
   createdAt: Date;
   updatedAt: Date;
 
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-/**
- * User schema
- */
+
+//User schema
+
 const userSchema = new Schema<IUser>(
   {
     email: {
@@ -47,24 +48,28 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ["user", "admin"],
       default: "user",
+
     },
+    isVerififed:{
+    type:Boolean,
+    default:false},
+    verificationTokenHash:{
+    type:String},
+    verificationTokenExpiry:{
+      type: Date},
   },
   { timestamps: true }
 );
 
-/**
- * Hash password before saving
- */
+//Hash password before saving
+ 
 userSchema.pre<IUser>("save", async function () {
   if (!this.isModified("password")) return;
-
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-/**
- * Compare entered password with stored hash
- */
+//Compare entered password with stored hash
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {

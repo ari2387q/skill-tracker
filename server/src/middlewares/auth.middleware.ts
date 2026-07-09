@@ -7,7 +7,6 @@ export const protect = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("🛡️ PROTECT MIDDLEWARE HIT");
 
   try {
     const authHeader = req.headers.authorization;
