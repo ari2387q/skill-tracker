@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import User from "../modules/auth/user.model"
+import User from "../modules/auth/user.model";
 
 export const protect = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  
 
   try {
     const authHeader = req.headers.authorization;

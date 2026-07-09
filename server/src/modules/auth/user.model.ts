@@ -1,6 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcryptjs";
-
+import crypto from "crypto"
 //User document interface
 export interface IUser extends Document {
   id: any;
@@ -74,6 +74,18 @@ userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
+};
+userSchema.methods.generateVerificationToken = function (): string {
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(rawToken)
+    .digest("hex");
+
+  this.verificationTokenHash = hashedToken;
+  this.verificationTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
+
+  return rawToken;
 };
 
 const User = model<IUser>("User", userSchema);
