@@ -46,9 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const register = async (email: string, password: string, name?: string) => {
-    const { user } = await authApi.register(email, password, name)
-    setUser(user)
-    router.push("/dashboard")
+    await authApi.register(email, password, name)
+  
   }
 
   const logout = () => {

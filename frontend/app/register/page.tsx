@@ -58,7 +58,7 @@ export default function RegisterPage() {
         title: "Account created!",
         description: "Welcome to Skill Tracker.",
       })
-      router.push("/dashboard")
+      router.push("/login")
     } catch (error: any) {
       toast({
         variant: "destructive",
