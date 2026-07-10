@@ -87,3 +87,25 @@ export const verifyEmail = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+export const resendVerification = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const result = await authService.resendVerification(email);
+    res.status(200).json({
+      success: true,
+      message: "Verification email resent. Please check your inbox.",
+      email: result.email,
+    });
+  } catch (error) {
+    if (error instanceof authService.AuthError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    console.error("RESEND VERIFICATION ERROR:", error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};

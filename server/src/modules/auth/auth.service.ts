@@ -96,3 +96,20 @@ export const verifyEmail = async (token: string) => {
 
   return { email: user.email };
 };
+// for those who missed the 1hr window for verifying the token
+export const resendVerification = async (email: string) => {
+  const user = await User.findOne({ email: email.toLowerCase() });
+
+  if (!user) {
+    throw new AuthError("No account found with this email", 404);
+  }
+  if (user.isVerified) {
+    throw new AuthError("Email already verified", 400);
+  }
+
+  const rawToken = user.generateVerificationToken();
+  await user.save();
+  await sendVerificationEmail(user.email, rawToken);
+
+  return { email: user.email };
+};

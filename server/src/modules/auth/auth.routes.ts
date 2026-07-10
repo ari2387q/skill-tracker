@@ -6,4 +6,5 @@ router.post("/register", authcontroller.register);
 router.post("/login", authcontroller.login);
 router.get("/profile", protect, authcontroller.getProfile);
 router.get("/verify-email", authcontroller.verifyEmail);
+router.post("/resend-verification", authcontroller.resendVerification);
 export default router;
