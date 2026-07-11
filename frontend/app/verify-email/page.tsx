@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const token = useSearchParams().get("token");
   const [message, setMessage] = useState("Verifying...");
 
   useEffect(() => {
-    if (!token) return setMessage("No token found.");
+    if (!token) {
+      setMessage("No token found.");
+      return;
+    }
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email?token=${token}`)
       .then((res) => res.json())
@@ -22,5 +25,13 @@ export default function VerifyEmailPage() {
       <p>{message}</p>
       <Link href="/login">Go to Login</Link>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: "center", marginTop: "100px" }}>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
