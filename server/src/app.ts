@@ -9,12 +9,22 @@ import aiRoutes from "./modules/ai/ai.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes"
 
 const app = express();
+const allowedOrigins = ["http://localhost:3000", process.env.CLIENT_URL].filter(Boolean) as string[];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      // and allow origins present in our allowed list
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
-)
+);
 app.use(express.json());
 app.use(morgan("dev"));
 
