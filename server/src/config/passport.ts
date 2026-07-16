@@ -25,10 +25,8 @@ passport.use(
           const existingLocalUser = await User.findOne({ email });
 
           if (existingLocalUser) {
-            // Email exists but signed up locally — block, don't auto-link
-            return done(new Error("Email already registered with password login"));
+            return done(null, false, { message: "Email already registered with password login" });
           }
-
           // Create a brand new Google user
           user = await User.create({
             email,
