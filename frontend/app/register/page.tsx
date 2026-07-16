@@ -71,7 +71,7 @@ export default function RegisterPage() {
   }
 
   const handleGoogleSignUp = () => {
-    window.location.href = "/auth/google"
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`
   }
 
   return (
