@@ -25,7 +25,11 @@ passport.use(
           const existingLocalUser = await User.findOne({ email });
 
           if (existingLocalUser) {
-            return done(null, false, { message: "Email already registered with password login" });
+            // Link the Google account to the existing local account
+            existingLocalUser.googleId = profile.id;
+            existingLocalUser.isVerified = true;
+            await existingLocalUser.save();
+            return done(null, existingLocalUser);
           }
           // Create a brand new Google user
           user = await User.create({
