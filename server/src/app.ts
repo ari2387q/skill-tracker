@@ -7,6 +7,8 @@ import skillsRoutes from "./modules/skills/skills.routes";
 import  logsRoutes from "./modules/logs/logs.routes";
 import aiRoutes from "./modules/ai/ai.routes";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes"
+import passport from "./config/passport";
+
 
 const app = express();
 const allowedOrigins = ["http://localhost:3000", process.env.CLIENT_URL].filter(Boolean) as string[];
@@ -14,8 +16,6 @@ const allowedOrigins = ["http://localhost:3000", process.env.CLIENT_URL].filter(
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      // and allow origins present in our allowed list
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -27,7 +27,7 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan("dev"));
-
+app.use(passport.initialize());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/skills", skillsRoutes);

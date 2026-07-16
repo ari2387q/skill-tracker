@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import * as authService from "./auth.service";
 import jwt from "jsonwebtoken";
 
-const generateToken = (userId: string) => {
+export const generateToken = (userId: string) => {
   return jwt.sign(
     { id: userId },
     process.env.JWT_SECRET as string,

@@ -12,6 +12,8 @@ export interface IUser extends Document {
   isVerified:boolean;
   verificationTokenHash?: string;
   verificationTokenExpiry?: Date;
+  authProvider: "local" | "google";
+  googleId?:string;
   createdAt: Date;
   updatedAt: Date;
   generateVerificationToken():any;
@@ -31,11 +33,13 @@ const userSchema = new Schema<IUser>(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
-    password: {
+    password:{
       type: String,
-      required: true,
-      minlength: 6,
-      select: false, // password not returned by default
+      required: function (this: IUser) {
+      return this.authProvider === "local";
+      },
+    minlength: 6,
+    select: false,
     },
     streak: {
       type: Number,
@@ -54,9 +58,18 @@ const userSchema = new Schema<IUser>(
     type:Boolean,
     default:false},
     verificationTokenHash:{
-    type:String},
+    type:String,
+    select: false,},
     verificationTokenExpiry:{
       type: Date},
+    authProvider:{
+      type:String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    googleId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
@@ -64,7 +77,7 @@ const userSchema = new Schema<IUser>(
 //Hash password before saving
  
 userSchema.pre<IUser>("save", async function () {
-  if (!this.isModified("password")) return;
+  if (!this.isModified("password") || !this.password) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
