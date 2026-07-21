@@ -25,10 +25,14 @@ passport.use(
           const existingLocalUser = await User.findOne({ email });
 
           if (existingLocalUser) {
-            // Link the Google account to the existing local account
+            // Link the Google account using updateOne to avoid Mongoose validation errors
+            // caused by the password field having `select: false`
+            await User.updateOne(
+              { _id: existingLocalUser._id },
+              { $set: { googleId: profile.id, isVerified: true } }
+            );
             existingLocalUser.googleId = profile.id;
             existingLocalUser.isVerified = true;
-            await existingLocalUser.save();
             return done(null, existingLocalUser);
           }
           // Create a brand new Google user
