@@ -1,11 +1,9 @@
 import dotenv from 'dotenv';
 import path from "path";
-
-// Make sure it reads the correct file
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-
 import app from './app';
 import { connectDB } from './db/mongo';
+
 const PORT = process.env.PORT || 5000;
 const startServer = async (): Promise<void> => {
   try {

@@ -4,6 +4,8 @@ import { protect } from "../../middlewares/auth.middleware";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import { generateToken } from "./auth.controller";
+import { loginlimiter, registerLimiter, resendVerificationLimiter } from "../../middlewares/ratelimiting.middleware";
+
 const router = Router();
 // Step 1: kicks off the flow, redirects to Google's consent screen
 router.get(
@@ -28,9 +30,10 @@ router.get(
     }
   }
 );
-router.post("/register", authcontroller.register);
-router.post("/login", authcontroller.login);
+router.post("/register", registerLimiter, authcontroller.register);
+router.post("/login", loginlimiter, authcontroller.login);
+
 router.get("/profile", protect, authcontroller.getProfile);
 router.get("/verify-email", authcontroller.verifyEmail);
-router.post("/resend-verification", authcontroller.resendVerification);
+router.post("/resend-verification", resendVerificationLimiter, authcontroller.resendVerification);
 export default router;

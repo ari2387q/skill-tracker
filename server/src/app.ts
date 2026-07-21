@@ -11,6 +11,7 @@ import passport from "./config/passport";
 
 
 const app = express();
+app.set("trust proxy", 1);
 const allowedOrigins = ["http://localhost:3000", process.env.CLIENT_URL].filter(Boolean) as string[];
 
 app.use(
