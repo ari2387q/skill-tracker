@@ -71,14 +71,28 @@ export const toggleSkillActive = async (skillId: string) => {
 }
 
 // Helper to transform Mongo document to frontend-friendly object
-const transformSkill = (skill: ISkill) => ({
-  id: skill._id.toString(),
-  name: skill.name,
-  isActive: skill.isActive,
-  currentStreak: skill.streak,
-  longestStreak: skill.streak, // optionally track max in DB
-  lastPracticed: skill.lastpracticed ? skill.lastpracticed.toISOString() : null,
-  totalPractices: skill.streak, // for now same as streak
-  createdAt: skill.createdAt,
-  updatedAt: skill.updatedAt,
-})
+const transformSkill = (skill: ISkill) => {
+  let currentStreak = skill.streak;
+  if (skill.lastpracticed) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const last = new Date(skill.lastpracticed);
+    last.setHours(0, 0, 0, 0);
+    const diff = (today.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
+    if (diff > 1) {
+      currentStreak = 0;
+    }
+  }
+
+  return {
+    id: skill._id.toString(),
+    name: skill.name,
+    isActive: skill.isActive,
+    currentStreak: currentStreak,
+    longestStreak: skill.streak, // optionally track max in DB
+    lastPracticed: skill.lastpracticed ? skill.lastpracticed.toISOString() : null,
+    totalPractices: skill.streak, // for now same as streak
+    createdAt: skill.createdAt,
+    updatedAt: skill.updatedAt,
+  };
+};

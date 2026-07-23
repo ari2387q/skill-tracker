@@ -24,27 +24,36 @@ export const getDashboardData = async (userId: string)=>{
     )
     const daysTracked = uniqueDays.size
 
-    let activeStreak =0
-    let lastDate: Date| null =null
-     for (let i = logs.length - 1; i >= 0; i--) {
-    const current = new Date(logs[i].practicedAt)
-    current.setHours(0, 0, 0, 0)
+    let activeStreak = 0;
+    
+    const uniqueLogDates = Array.from(new Set(
+        logs.map(log => {
+            const d = new Date(log.practicedAt);
+            d.setHours(0, 0, 0, 0);
+            return d.getTime();
+        })
+    )).sort((a, b) => b - a); // newest dates first
 
-    if (!lastDate) {
-      activeStreak = 1
-      lastDate = current
-    } else {
-      const diff =
-        (lastDate.getTime() - current.getTime()) / (1000 * 60 * 60 * 24)
+    if (uniqueLogDates.length > 0) {
+        const mostRecent = uniqueLogDates[0];
+        const diffToday = (today.getTime() - mostRecent) / (1000 * 60 * 60 * 24);
 
-      if (diff === 1) {
-        activeStreak++
-        lastDate = current
-      } else {
-        break
-      }
+        if (diffToday <= 1) {
+            activeStreak = 1;
+            let lastTime = mostRecent;
+
+            for (let i = 1; i < uniqueLogDates.length; i++) {
+                const currentTime = uniqueLogDates[i];
+                const diff = (lastTime - currentTime) / (1000 * 60 * 60 * 24);
+                if (diff === 1) {
+                    activeStreak++;
+                    lastTime = currentTime;
+                } else {
+                    break;
+                }
+            }
+        }
     }
-     }
      let motivation = "Start practicing today 🚀"
   if (activeStreak >= 5) motivation = "🔥 Amazing streak! Keep pushing!"
   else if (activeStreak >= 3) motivation = "You're building momentum 💪"
