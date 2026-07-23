@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { Sidebar, BurgerButton } from "./sidebar"
+import { TopHeader } from "./top-header"
 import { AuthGuard } from "@/components/auth-guard"
 import Link from "next/link"
 import { Rocket } from "lucide-react"
@@ -35,8 +36,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="w-9" /> {/* spacer */}
         </header>
 
+        {/* Desktop Top Header */}
+        <TopHeader />
+
         {/* Main Content */}
-        <main className="flex-1 md:pl-72 pt-14 md:pt-0 pb-12 md:pb-0">
+        <main className="flex-1 md:pl-72 pt-14 md:pt-16 pb-12 md:pb-0">
           <div className="container mx-auto p-4 md:p-8 max-w-6xl animate-fade-in-slide-up">{children}</div>
         </main>
       </div>
