@@ -19,9 +19,11 @@ const navigation = [
 interface SidebarProps {
   isOpen?: boolean
   onOpenChange?: (open: boolean) => void
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
-function NavContent({ onClose }: { onClose?: () => void }) {
+function NavContent({ onClose, isCollapsed, onToggleCollapse }: { onClose?: () => void, isCollapsed?: boolean, onToggleCollapse?: () => void }) {
   const pathname = usePathname()
   const { logout, user } = useAuth()
   const { theme, setTheme } = useTheme()
@@ -32,30 +34,41 @@ function NavContent({ onClose }: { onClose?: () => void }) {
   }, [])
 
   return (
-    <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300">
+    <div className="flex h-full flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 overflow-hidden">
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-3 font-extrabold text-xl text-foreground hover:scale-105 transition-transform duration-200"
-          onClick={onClose}
-        >
-          <div className="p-2 rounded-xl bg-primary text-primary-foreground shadow-md shadow-primary/20">
-            <Rocket className="h-5 w-5 animate-pulse" />
-          </div>
-          <span className="tracking-tight">
-            Skill<span className="text-primary">Tracker</span>
-          </span>
-        </Link>
-        {/* Close button (mobile only) */}
-        {onClose && (
-          <button
-            className="p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
-            onClick={onClose}
-            aria-label="Close menu"
-          >
-            <X className="h-5 w-5" />
-          </button>
+      <div className={`flex h-16 items-center ${isCollapsed ? 'justify-center' : 'justify-between px-6'} border-b border-sidebar-border`}>
+        {isCollapsed ? (
+           <button onClick={onToggleCollapse} className="p-2 rounded-xl bg-primary text-primary-foreground shadow-md hover:scale-105 transition-transform" title="Expand Sidebar">
+             <Menu className="h-5 w-5" />
+           </button>
+        ) : (
+          <>
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 font-extrabold text-xl text-foreground hover:scale-105 transition-transform duration-200"
+              onClick={onClose}
+            >
+              <div className="p-2 rounded-xl bg-primary text-primary-foreground shadow-md shadow-primary/20">
+                <Rocket className="h-5 w-5 animate-pulse" />
+              </div>
+              <span className="tracking-tight">
+                Skill<span className="text-primary">Tracker</span>
+              </span>
+            </Link>
+            <button onClick={onToggleCollapse} className="hidden md:block p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-all" title="Collapse Sidebar">
+              <Menu className="h-5 w-5" />
+            </button>
+            {/* Close button (mobile only) */}
+            {onClose && (
+              <button
+                className="md:hidden p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                onClick={onClose}
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </>
         )}
       </div>
 
@@ -68,31 +81,36 @@ function NavContent({ onClose }: { onClose?: () => void }) {
               href={item.href}
               onClick={onClose}
               className={cn(
-                "flex items-center gap-4 px-5 py-3 text-sm font-semibold rounded-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]",
+                "flex items-center gap-4 py-3 text-sm font-semibold rounded-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]",
+                isCollapsed ? "justify-center px-0 mx-2" : "px-5",
                 isActive
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 dark:shadow-primary/10 border-b border-white/10"
                   : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
               )}
+              title={isCollapsed ? item.name : undefined}
             >
-              <item.icon className={cn("h-5 w-5 transition-transform duration-300", isActive ? "scale-110" : "")} />
-              <span>{item.name}</span>
+              <item.icon className={cn("h-5 w-5 shrink-0 transition-transform duration-300", isActive ? "scale-110" : "")} />
+              {!isCollapsed && <span>{item.name}</span>}
             </Link>
           )
         })}
       </nav>
 
       {/* Theme Toggler */}
-      <div className="px-6 py-4 border-t border-sidebar-border flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          {mounted && theme === "dark" ? "Dark Mode" : "Light Mode"}
-        </span>
+      <div className={`px-4 py-4 border-t border-sidebar-border flex items-center ${isCollapsed ? 'justify-center' : 'justify-between px-6'}`}>
+        {!isCollapsed && (
+          <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            {mounted && theme === "dark" ? "Dark Mode" : "Light Mode"}
+          </span>
+        )}
         {mounted && (
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-9 w-9 bg-muted hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition-all duration-300 active:scale-90"
+            className="shrink-0 rounded-full h-9 w-9 bg-muted hover:bg-sidebar-accent text-muted-foreground hover:text-foreground transition-all duration-300 active:scale-90"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             aria-label="Toggle Theme"
+            title="Toggle Theme"
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4 text-primary animate-spin" style={{ animationDuration: '6s' }} />
@@ -103,32 +121,38 @@ function NavContent({ onClose }: { onClose?: () => void }) {
         )}
       </div>
 
-      <div className="p-4 border-t border-sidebar-border">
-        <div className="mb-4 px-3">
-          <p className="text-sm font-bold text-foreground">{user?.name || "User"}</p>
-          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-        </div>
+      <div className={`p-4 border-t border-sidebar-border ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+        {!isCollapsed && (
+          <div className="mb-4 px-3 overflow-hidden">
+            <p className="text-sm font-bold text-foreground truncate">{user?.name || "User"}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+          </div>
+        )}
         <Button
           variant="ghost"
-          className="w-full justify-start gap-4 px-5 py-3 text-sm font-semibold rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all duration-300"
+          className={cn(
+             "transition-all duration-300 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-full shrink-0",
+             isCollapsed ? "p-2 h-10 w-10 justify-center" : "w-full justify-start gap-4 px-5 py-3 text-sm font-semibold"
+          )}
           onClick={logout}
+          title={isCollapsed ? "Logout" : undefined}
         >
-          <LogOut className="h-5 w-5" />
-          <span>Logout</span>
+          <LogOut className="h-5 w-5 shrink-0" />
+          {!isCollapsed && <span>Logout</span>}
         </Button>
       </div>
     </div>
   )
 }
 
-export function Sidebar({ isOpen = false, onOpenChange }: SidebarProps) {
+export function Sidebar({ isOpen = false, onOpenChange, isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const close = () => onOpenChange?.(false)
 
   return (
     <>
       {/* Desktop: always visible */}
       <div className="hidden md:flex h-full flex-col">
-        <NavContent />
+        <NavContent isCollapsed={isCollapsed} onToggleCollapse={onToggleCollapse} />
       </div>
 
       {/* Mobile: Backdrop */}
@@ -146,7 +170,7 @@ export function Sidebar({ isOpen = false, onOpenChange }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <NavContent onClose={close} />
+        <NavContent onClose={close} isCollapsed={false} />
       </div>
     </>
   )

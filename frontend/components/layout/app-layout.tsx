@@ -3,25 +3,25 @@
 import type React from "react"
 import { useState } from "react"
 import { Sidebar, BurgerButton } from "./sidebar"
-import { TopHeader } from "./top-header"
 import { AuthGuard } from "@/components/auth-guard"
 import Link from "next/link"
 import { Rocket } from "lucide-react"
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
     <AuthGuard>
       <div className="flex min-h-screen bg-background">
         {/* Desktop Static Sidebar */}
-        <aside className="hidden w-72 md:block fixed h-full inset-y-0 z-50">
-          <Sidebar onOpenChange={setIsSidebarOpen} isOpen={isSidebarOpen} />
+        <aside className={`hidden md:block fixed h-full inset-y-0 z-50 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-72'}`}>
+          <Sidebar onOpenChange={setIsSidebarOpen} isOpen={isSidebarOpen} isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} />
         </aside>
 
         {/* Mobile: Pass open state to sidebar for drawer */}
         <div className="md:hidden">
-          <Sidebar onOpenChange={setIsSidebarOpen} isOpen={isSidebarOpen} />
+          <Sidebar onOpenChange={setIsSidebarOpen} isOpen={isSidebarOpen} isCollapsed={false} />
         </div>
 
         {/* Mobile Header */}
@@ -36,11 +36,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="w-9" /> {/* spacer */}
         </header>
 
-        {/* Desktop Top Header */}
-        <TopHeader />
-
         {/* Main Content */}
-        <main className="flex-1 md:pl-72 pt-14 md:pt-16 pb-12 md:pb-0">
+        <main className={`flex-1 transition-all duration-300 pt-14 md:pt-0 pb-12 md:pb-0 ${isCollapsed ? 'md:pl-20' : 'md:pl-72'}`}>
           <div className="container mx-auto p-4 md:p-8 max-w-6xl animate-fade-in-slide-up">{children}</div>
         </main>
       </div>

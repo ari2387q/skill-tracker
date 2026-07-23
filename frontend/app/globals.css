@@ -40,37 +40,37 @@
 
 .dark {
   --background: #000000; /* Pure black */
-  --foreground: #fef08a; /* Bright light yellow-white text */
+  --foreground: #ffffff; /* Crisp white text */
   --card: #09090b; /* Deep black cards */
   --card-foreground: #fafafa;
   --popover: #09090b;
   --popover-foreground: #fafafa;
-  --primary: #facc15; /* Cyberpunk Yellow */
+  --primary: #c2f82b; /* Startathon Neon Green */
   --primary-foreground: #000000; /* Contrast black */
   --secondary: #18181b; /* Dark charcoal */
-  --secondary-foreground: #facc15; /* Yellow text */
+  --secondary-foreground: #c2f82b; /* Neon green text */
   --muted: #09090b;
   --muted-foreground: #a1a1aa;
   --accent: #1e1b4b;
-  --accent-foreground: #facc15;
+  --accent-foreground: #c2f82b;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #27272a; /* Keep borders clean or slightly yellow */
+  --border: #27272a; 
   --input: #000000;
-  --ring: #facc15;
-  --chart-1: #facc15;
+  --ring: #c2f82b;
+  --chart-1: #c2f82b;
   --chart-2: #3b82f6;
   --chart-3: #10b981;
   --chart-4: #ec4899;
   --chart-5: #8b5cf6;
   --sidebar: #000000; /* Pitch black sidebar */
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #facc15;
+  --sidebar-primary: #c2f82b;
   --sidebar-primary-foreground: #000000;
   --sidebar-accent: #18181b;
-  --sidebar-accent-foreground: #facc15;
+  --sidebar-accent-foreground: #c2f82b;
   --sidebar-border: #18181b;
-  --sidebar-ring: #facc15;
+  --sidebar-ring: #c2f82b;
 }
 
 @layer theme {

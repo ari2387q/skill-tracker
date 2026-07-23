@@ -240,10 +240,11 @@ export default function LogsPage() {
 
               {log.notes && <p className="mt-2">{log.notes}</p>}
 
-              <div className="mt-4 flex gap-4">
+              <div className="mt-4 flex gap-3">
                 <Button
                   size="sm"
                   variant="outline"
+                  className="h-8 px-4 text-xs font-semibold rounded-full"
                   onClick={() => {
                     setEditingLog(log)
                     setEditNotes(log.notes || "")
@@ -256,6 +257,7 @@ export default function LogsPage() {
                 <Button
                   size="sm"
                   variant="destructive"
+                  className="h-8 px-4 text-xs font-semibold rounded-full"
                   disabled={isDeletingId === log.id}
                   onClick={() => handleDeleteLog(log.id)}
                 >
