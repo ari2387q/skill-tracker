@@ -39,4 +39,8 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
+app.get("/", (_req, res) => {
+  res.send("Skill Tracker API is running!");
+});
+
 export default app;
